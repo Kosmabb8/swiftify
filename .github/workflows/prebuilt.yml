@@ -125,7 +125,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            g++-12 ninja-build pkg-config \
+            g++-12 clang-15 ninja-build pkg-config \
             libpulse-dev libasound2-dev libssl-dev libsecret-1-dev \
             libgl1-mesa-dev libegl1-mesa-dev libxkbcommon-dev libxkbcommon-x11-0 \
             libfontconfig1-dev libfreetype-dev libdbus-1-dev \
@@ -141,10 +141,13 @@ jobs:
           modules: qtshadertools qtwebsockets
           cache: true
 
+      # clang against gcc 12's standard library, so it still runs on older
+      # distros. gcc 12 miscompiles some coroutines, and the tarball it built
+      # corrupted its heap on linux
       - name: build
         env:
-          CC: gcc-12
-          CXX: g++-12
+          CC: clang-15
+          CXX: clang++-15
         run: ./tools/build-linux-tarball.sh --qt "$QT_ROOT_DIR" --out dist
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
