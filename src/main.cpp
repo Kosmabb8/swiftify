@@ -49,6 +49,9 @@
 #include <QNetworkAccessManager>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
+#ifdef Q_OS_WIN
+#include <QSessionManager>
+#endif
 #include <QSocketNotifier>
 #include <QtQml/qqmlextensionplugin.h>
 
@@ -269,6 +272,11 @@ int main(int argc, char *argv[])
     fonts::loadInterfaceFont();
 
     Settings settings(nullptr);
+    QObject::connect(&application, &QCoreApplication::aboutToQuit, &settings, &Settings::sync);
+#ifdef Q_OS_WIN
+    QObject::connect(&application, &QGuiApplication::commitDataRequest, &settings,
+                     [&settings](QSessionManager &) { settings.sync(); }, Qt::DirectConnection);
+#endif
     Translations translations(&settings);
     Theme theme(&settings);
     ErrorCenter errors(nullptr);
