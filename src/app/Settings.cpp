@@ -115,6 +115,7 @@ void Settings::load()
     m_trackListVisualizer = stored<bool>(m_store, "trackListVisualizer", m_trackListVisualizer);
     m_immersiveVisualizer = stored<bool>(m_store, "immersiveVisualizer", m_immersiveVisualizer);
     m_circularVisualizer = stored<bool>(m_store, "circularVisualizer", m_circularVisualizer);
+    m_continuousVisualizer = stored<bool>(m_store, "continuousVisualizer", m_continuousVisualizer);
     m_roundArtwork = stored<bool>(m_store, "roundArtwork", m_roundArtwork);
     {
         const QString raw = stored<QString>(m_store, "circularVisualizerShape", m_visualizerShape);
@@ -234,6 +235,16 @@ void Settings::setCircularVisualizer(bool value)
     m_circularVisualizer = value;
     savePreference(QStringLiteral("circularVisualizer"), value);
     emit circularVisualizerChanged();
+}
+
+void Settings::setContinuousVisualizer(bool value)
+{
+    if (m_continuousVisualizer == value) {
+        return;
+    }
+    m_continuousVisualizer = value;
+    m_store.setValue(QStringLiteral("continuousVisualizer"), value);
+    emit continuousVisualizerChanged();
 }
 
 void Settings::setRoundArtwork(bool value)
